@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Week {{ week_number }}{% endblock %}
+
+{% block content %}
+
+<a href="/week_order/{{ user_id }}/">Week order</a><br>
+
+<table>
+{% for day_id, day in days %}
+<tr>
+	<td><p>{{ day|date:"l j.n" }}:</p></td>
+
+	<td><p>Idem</p>
+</tr>
+{% endfor %}
+<table>
+
+<table>
+
+{% for r in routes %}
+<tr>
+	<td>{{ r.date|date:"l j.n" }}</td>
+	<td>{{ r.count }}</td>
+</tr>
+{% endfor %}
+<table>
+
+
+
+{% endblock %}

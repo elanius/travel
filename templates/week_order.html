@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Week {{ week_number }}{% endblock %}
+
+{% block content %}
+
+<a href="/summary/{{ user_id }}/">Summary</a><br>
+
+<form name="order" action="/summary/{{ user_id }}/" method="get">
+<table>
+
+{% for day_id, day, checked in days %}
+<tr>
+	<td><label>{{ day|date:"l j.n" }}:</label></td>
+	{% if checked == True %}
+		<td><input type="checkbox" name={{day_id}} value="1" checked>Idem</td>
+	{% else %}
+		<td><input type="checkbox" name={{day_id}} value="1">Idem</td>
+	{% endif %}
+</tr>
+{% endfor %}
+<tr>
+	<td>
+		<input type="hidden" name="week_number" value={{ week_number }} />
+		<input type="submit" value="submit" />
+	</td>
+</tr>
+</table>
+</form>
+{% endblock %}
