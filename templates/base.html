@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
 </head>
 <body>
-    <h1>Route Presov - Kosice</h1>
-    <p>{{ traveler }}</p>
-    {% block content %}{% endblock %}
-    {% block footer %}
-    <hr>
-    <p>Thanks for visiting my site.</p>
-    {% endblock %}
+	<div class="main">
+		<h1>Prešov - Košice</h1>
+		{% block content %}{% endblock %}
+
+		<div class="footer">
+			{% block footer %}
+			<hr>
+			<p>Dnešný datúm: {{ curr_date|date:"j.n.Y" }}</p>
+			{% endblock %}
+		</div>
+	</div>
 </body>
 </html>

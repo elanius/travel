@@ -1,16 +1,29 @@
 from django.db import models
 
-class Person(models.Model):
-	name = models.CharField(max_length=200)
-	link = models.CharField(max_length=200)
+class Route(models.Model):
+	date = models.DateField('route date')
+	space = models.IntegerField(default=4)
+
+
+	def __unicode__(self):
+		return u'%s' % self.date.strftime("%d %b (%a)")
+
+
+
+class Pasanger(models.Model):
+	name = models.CharField(max_length=32)
+	link = models.CharField(max_length=32)
+
 
 	def __unicode__(self):
 		return self.name
 
-class Route(models.Model):
-	person = models.ForeignKey(Person)
-	date = models.DateField('route date')
-	count = models.IntegerField(default=0)
+
+
+class Ticket(models.Model):
+	pasanger = models.ForeignKey(Pasanger)
+	routes = models.ForeignKey(Route)
+	is_return = models.BooleanField(default=False)
 
 	def __unicode__(self):
-		return u'%s' % self.date
+		return "%s - %s" % (self.pasanger.name, self.routes.date.strftime("%d %b (%a)"))

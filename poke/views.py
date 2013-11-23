@@ -1,29 +1,16 @@
 from django.shortcuts import render
-from poke.models import Person, Route
+from poke.models import Route, Pasanger, Ticket
 import datetime
 
-def get_week_days(user):
-	now = datetime.datetime.now()
+current_year = 2013
 
-	if now.weekday() < 5:
-		monday = now - datetime.timedelta(days=now.weekday())
-	else:
-		monday = now + datetime.timedelta(days=(7 - now.weekday()))
+def get_week_days(week_number, year):
+	monday = datetime.datetime.strptime('%04d-%02d-1' % (year, week_number-1), '%Y-%W-%w')
 
 	days = list()
 	for x in xrange(0,5):
-		day_id = 'day_%d' % x
 		day_date =  monday+datetime.timedelta(days=x)
-		checked = False
-
-		try:
-			r = Route.objects.get(person=user, date=day_date.date())
-			if r.count > 0:
-				checked = True
-		except Route.DoesNotExist:
-			pass
-
-		days.append( (day_id, day_date, checked) )
+		days.append(day_date)
 
 	return days
 
@@ -39,55 +26,128 @@ def get_week_number():
 	return week_number
 
 
-def add_to_db(request, user_id):
-	user = Person.objects.get(link=user_id)
-	week_number = int(request.GET.get('week_number', '-'))
-	monday = datetime.datetime.strptime('%04d-%02d' % (2013, week_number), '%Y-%W')
+def get_year_number():
+	return datetime.datetime.now().year
 
-	for x in xrange(1,6):
-		day = monday + datetime.timedelta(days=x)
 
-		count = int(request.GET.get('day_%d' % x, '0'))
+def create_routes(weeks, year):
+	cur_week = get_week_number()
 
-		try:
-			r = Route.objects.get(person=user, date=day.date())
-			r.count = count
-			r.save()
-		except Route.DoesNotExist:
-			if count > 0:
-				r = Route.objects.create(person=user, date=day.date(), count=count)
-		
+	for x in xrange(weeks):
+		days_in_week = get_week_days(cur_week+x, current_year)
+
+		for day in days_in_week:
+			route = Route(date=day)
+			route.save()
+
+
+def get_week_routes():
+	routes = list()
+
+	days = get_week_days(get_week_number(), current_year)
+	for day in days:
+		routes.append(Route.objects.get(date=day))
+
+	return routes
+
+class RoutePasangers:
+	def __init__(self, route, pasangers):
+		self.date = route.date
+		self.space = route.space
+		self.free_space = self.space - len(pasangers)
+		self.pasangers = pasangers
+
 
 def home(request):
-	context = {}
+	route_pasangers = list()
+	for r in get_week_routes():
+		pasangers = [t.pasanger for t in Ticket.objects.filter(routes=r)]
+		route_pasangers.append(RoutePasangers(r, pasangers))
+
+	context = {
+		'curr_date': datetime.datetime.now(),
+		'routes': route_pasangers,
+	}
+
 	return render(request, 'home.html', context)
 
 
-def person_summary(request, user_id):
-	user = Person.objects.get(link=user_id)
-	
-	if len(request.GET) > 0:
-		add_to_db(request, user_id)
+def week_order(request, user_id):
+	p = Pasanger.objects.get(link=user_id)
 
-	routes = Route.objects.all()
+	order_placed = place_order(request, p)
 
 	context = {
-		'routes': routes,
-		'traveler': user.name,
+		'curr_date': datetime.datetime.now(),
+		'tickets': get_tickets(p),
+		'week_number': get_week_number(),
+		'year_number': get_year_number(),
+		'traveler': p.name,
 		'user_id' : user_id,
+		'order_placed': order_placed,
+	}
+
+	return render(request, 'week_order.html', context)
+
+
+def place_order(request, pasanger):
+	if len(request.GET) > 0:
+
+		days = get_week_days(int(request.GET.get('week_number')), int(request.GET.get('year_number')))
+
+		for x in xrange(1,6):
+			day_id = "day_%d" % x
+			reserved = int(request.GET.get(day_id, '0'))
+
+			route = Route.objects.get(date=days[x-1])
+
+			if reserved:
+				Ticket.objects.get_or_create(pasanger=pasanger, routes=route)
+			else:
+				try:
+					t = Ticket.objects.get(pasanger=pasanger, routes=route)
+					t.delete()
+				except Ticket.DoesNotExist:
+					pass
+
+		return True
+
+	else:
+		return False
+
+
+def person_summary(request, user_id):
+	p = Pasanger.objects.get(link=user_id)
+
+	context = {
+		'curr_date': datetime.datetime.now(),
+		'user_id' : user_id,
+		'routes': [t.routes for t in Ticket.objects.filter(pasanger=p)],
 	}
 
 	return render(request, 'person_summary.html', context)
 
 
-def week_order(request, user_id):
-	p = Person.objects.get(link=user_id)
+class TripTicket:
+	def __init__(self, date, enabled, bought):
+		self.date = date
+		self.enabled = enabled
+		self.bought = bought
 
-	context = {
-		'days': get_week_days(p),
-		'week_number': get_week_number(),
-		'traveler': p.name,
-		'user_id' : user_id,
-	}
 
-	return render(request, 'week_order.html', context)
+def get_tickets(pasanger):
+	tickets = list()
+	routes = get_week_routes();
+
+	for r in routes:
+		try:
+			Ticket.objects.get(pasanger=pasanger, routes=r)
+			bought = True
+		except Ticket.DoesNotExist:
+			bought = False
+
+		enabled = True if r.space > 0 else False
+
+		tickets.append(TripTicket(r.date, enabled, bought))
+
+	return tickets

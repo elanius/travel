@@ -1,0 +1,107 @@
+html, body {
+    background-color: #CAFBFC;
+    height: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+h1 {
+    margin: 0;
+}
+hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.info{
+	margin: 0 auto;
+	padding: 0;
+    text-align: left;
+    width: 80%;
+}
+
+.tools{
+	overflow: auto;
+	margin-bottom: 10px;
+}
+
+.order_placed{
+	display: inline-block;
+	text-align: right;
+	width: 25%;
+}
+
+.links{
+	display: inline-block;
+	text-align: left;
+	width: 70%;
+}
+
+.links a{
+	margin-right: 15px;
+}
+
+.main {
+    background-color: #7DE7F9;
+    border-left: 2px solid #2AAEC5;
+    border-right: 2px solid #2AAEC5;
+    box-shadow: 3px 0 3px 1px #058298, -3px 0 3px 1px #058298;
+    height: 100%;
+    margin: 0 auto;
+    text-align: center;
+    width: 60%;
+}
+
+.main h1{
+	margin-bottom: 10px;
+}
+.week_summary table {
+    border: 2px solid #0D6C8B;
+    margin: 0 auto;
+    text-align: center;
+    width: 80%;
+}
+.week_summary th {
+    background-color: #4AADBE;
+    border: 1px solid #0D6C8B;
+    padding: 0 3px;
+    text-align: left;
+}
+.week_summary td {
+    background-color: #81D3E1;
+    border: 1px solid #0D6C8B;
+    padding: 0 3px;
+    text-align: left;
+}
+
+.week_order table {
+    border: 2px solid #0D6C8B;
+    margin: 0 auto;
+    text-align: center;
+    width: 80%;
+}
+.week_order th {
+    background-color: #4AADBE;
+    border: 1px solid #0D6C8B;
+    padding: 0 3px;
+    text-align: left;
+}
+.week_order td {
+    background-color: #81D3E1;
+    border: 1px solid #0D6C8B;
+    padding: 0 3px;
+    text-align: left;
+}
+
+.submit{
+	margin-top: 20px;
+    padding-right: 20px;
+}
+
+.footer{
+	text-align: left;
+	margin-left: 10px;
+    margin-right: 10px;
+}

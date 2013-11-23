@@ -1,5 +1,6 @@
 from django.contrib import admin
-from poke.models import Person, Route
+from poke.models import Pasanger, Route, Ticket
 
-admin.site.register(Person)
 admin.site.register(Route)
+admin.site.register(Pasanger)
+admin.site.register(Ticket)

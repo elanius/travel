@@ -4,28 +4,30 @@
 
 {% block content %}
 
-<a href="/week_order/{{ user_id }}/">Week order</a><br>
+<div class="info">
+	<h3>{{ traveler }}</h3>
+	<div class="tools">
+		<div class="links">
+			<a href="/">Domov</a>
+			<a href="/week_order/{{ user_id }}/">Rezervacia</a>
+		</div>
+	</div>
+</div>
 
+
+
+<div class="week_summary">
 <table>
-{% for day_id, day in days %}
 <tr>
-	<td><p>{{ day|date:"l j.n" }}:</p></td>
-
-	<td><p>Idem</p>
+	<th>Deň</th>
 </tr>
-{% endfor %}
-<table>
-
-<table>
-
 {% for r in routes %}
 <tr>
-	<td>{{ r.date|date:"l j.n" }}</td>
-	<td>{{ r.count }}</td>
+	<td>{{ r.date|date:"j.n - l" }}</td>
 </tr>
 {% endfor %}
-<table>
-
+</table>
+</div>
 
 
 {% endblock %}

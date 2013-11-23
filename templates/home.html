@@ -4,4 +4,25 @@
 
 {% block content %}
 
+<div class="info">
+	<p>Z domu vyražam o 6:30 v Prešove som o 6:45 a príchod do Košic je približne o 7:15</p>
+</div>
+
+<div class="week_summary">
+<table>
+<tr>
+	<th>Deň</th>
+	<th>Voľné miesto</th>
+	<th>Pasažieri</th>
+</tr>
+{% for r in routes %}
+<tr>
+	<td>{{ r.date|date:"j.n - l" }}</td>
+	<td>{{ r.free_space }}</td>
+	<td>{{ r.pasangers|join:", " }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
 {% endblock %}
