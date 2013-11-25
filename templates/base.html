@@ -7,12 +7,13 @@
 <body>
 	<div class="main">
 		<h1>Prešov - Košice</h1>
+		<h4>[BETA]</h4>
 		{% block content %}{% endblock %}
 
 		<div class="footer">
 			{% block footer %}
 			<hr>
-			<p>Dnešný datúm: {{ curr_date|date:"j.n.Y" }}</p>
+			<p>Dnešný dátum: {{ curr_date|date:"j.n.Y" }}</p>
 			{% endblock %}
 		</div>
 	</div>
