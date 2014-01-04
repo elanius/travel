@@ -1,20 +1,25 @@
+{% load staticfiles %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <link rel="stylesheet" type="text/css" href="{% static "/static/style.css" %}" />
 </head>
 <body>
-	<div class="main">
-		<h1>Prešov - Košice</h1>
-		<h4>[BETA]</h4>
-		{% block content %}{% endblock %}
-
-		<div class="footer">
-			{% block footer %}
-			<hr>
-			<p>Dnešný dátum: {{ curr_date|date:"j.n.Y" }}</p>
-			{% endblock %}
+	<div id="holder">
+		<div id="main">
+			<div id="header">
+				<img src="{% static "header.png" %}">
+			</div>
+			<div id="body">
+				{% block content %}{% endblock %}
+			</div>
+			<div id="footer">
+				{% block footer %}
+				<hr>
+				<p>Dnešný dátum: {{ curr_date|date:"j.n.Y" }}</p>
+				{% endblock %}
+			</div>
 		</div>
 	</div>
 </body>

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load custom_filters %}
+{% load staticfiles %}
 
 {% block title %}Route Presov-Kosice{% endblock %}
 
@@ -17,9 +19,21 @@
 </tr>
 {% for r in routes %}
 <tr>
-	<td>{{ r.date|date:"j.n - l" }}</td>
-	<td>{{ r.free_space }}</td>
-	<td>{{ r.pasangers|join:", " }}</td>
+	<td width="20%">{{ r.date|date:"j.n - l" }}</td>
+	<td width="15%">
+		{% for i in r.space|get_range %}
+			{% if forloop.revcounter0 >= r.free_space%}
+				<img src="{% static "person.png" %}" alt="free space">
+			{% else %}
+ 				<img src="{% static "person-empty.png" %}" alt="free space">
+			{% endif %}
+		{% empty %}
+			<img src="{% static "sleep.png" %}">
+		{% endfor %}
+	</td>
+	<td width="65%">
+		<span id="week_summary_name">{{ r.pasangers|join:", " }}</span>
+	</td>
 </tr>
 {% endfor %}
 </table>

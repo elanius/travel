@@ -30,25 +30,32 @@ def get_year_number():
 	return datetime.datetime.now().year
 
 
-def create_routes(weeks, year):
-	cur_week = get_week_number()
+def create_routes(week_num, year):
+	days_in_week = get_week_days(week_num, current_year)
 
-	for x in xrange(weeks):
-		days_in_week = get_week_days(cur_week+x, current_year)
-
-		for day in days_in_week:
-			route = Route(date=day)
-			route.save()
+	for day in days_in_week:
+		route = Route(date=day)
+		route.save()
 
 
-def get_week_routes():
+def get_week_routes(weeks=1):
 	routes = list()
 
-	days = get_week_days(get_week_number(), current_year)
-	for day in days:
-		routes.append(Route.objects.get(date=day))
+	step = 1 if weeks > 0 else -1
+	for x in xrange(0, weeks, step):
+		week_num = get_week_number()+x
+		days = get_week_days(week_num, current_year)
+		for day in days:
+			try:
+				route = Route.objects.get(date=day)
+			except Route.DoesNotExist:
+				create_routes(week_num, current_year)
+				route = Route.objects.get(date=day)
+
+			routes.append(route)
 
 	return routes
+
 
 class RoutePasangers:
 	def __init__(self, route, pasangers):
@@ -58,10 +65,13 @@ class RoutePasangers:
 		self.pasangers = pasangers
 
 
-def home(request):
+def home(request, user_id=None):
+	if user_id != None:
+		place_order(request, Pasanger.objects.get(link=user_id))
+
 	route_pasangers = list()
 	for r in get_week_routes():
-		pasangers = [t.pasanger for t in Ticket.objects.filter(routes=r)]
+		pasangers = [t.pasanger for t in Ticket.objects.filter(route=r)]
 		route_pasangers.append(RoutePasangers(r, pasangers))
 
 	context = {
@@ -75,8 +85,6 @@ def home(request):
 def week_order(request, user_id):
 	p = Pasanger.objects.get(link=user_id)
 
-	order_placed = place_order(request, p)
-
 	context = {
 		'curr_date': datetime.datetime.now(),
 		'tickets': get_tickets(p),
@@ -84,7 +92,6 @@ def week_order(request, user_id):
 		'year_number': get_year_number(),
 		'traveler': p.name,
 		'user_id' : user_id,
-		'order_placed': order_placed,
 	}
 
 	return render(request, 'week_order.html', context)
@@ -102,10 +109,10 @@ def place_order(request, pasanger):
 			route = Route.objects.get(date=days[x-1])
 
 			if reserved:
-				Ticket.objects.get_or_create(pasanger=pasanger, routes=route)
+				Ticket.objects.get_or_create(pasanger=pasanger, route=route)
 			else:
 				try:
-					t = Ticket.objects.get(pasanger=pasanger, routes=route)
+					t = Ticket.objects.get(pasanger=pasanger, route=route)
 					t.delete()
 				except Ticket.DoesNotExist:
 					pass
@@ -122,32 +129,65 @@ def person_summary(request, user_id):
 	context = {
 		'curr_date': datetime.datetime.now(),
 		'user_id' : user_id,
-		'routes': [t.routes for t in Ticket.objects.filter(pasanger=p)],
+		'routes': [t.route for t in Ticket.objects.filter(pasanger=p)],
 	}
 
 	return render(request, 'person_summary.html', context)
 
 
 class TripTicket:
-	def __init__(self, date, enabled, bought):
+	def __init__(self, date, enabled, bought, back):
 		self.date = date
 		self.enabled = enabled
 		self.bought = bought
+		self.back = back
 
 
-def get_tickets(pasanger):
+def get_tickets(pasanger, weeks=1):
 	tickets = list()
-	routes = get_week_routes();
+	routes = get_week_routes(weeks);
 
 	for r in routes:
 		try:
-			Ticket.objects.get(pasanger=pasanger, routes=r)
+			t = Ticket.objects.get(pasanger=pasanger, route=r)
 			bought = True
+			back = t.is_return
 		except Ticket.DoesNotExist:
 			bought = False
+			back = False
 
-		enabled = True if r.space > 0 else False
+		ticket_count = Ticket.objects.filter(pasanger=pasanger, route=r).count()
 
-		tickets.append(TripTicket(r.date, enabled, bought))
+		enabled = True if r.space > 0 and ticket_count <= r.space else False
+
+		tickets.append(TripTicket(r.date, enabled, bought, back))
 
 	return tickets
+
+
+class TripWeek:
+	def __init__(self, number, tickets):
+		self.number = number
+		self.tickets = tickets
+
+
+def older(request, user_id):
+	p = Pasanger.objects.get(link=user_id)
+	curr_week = get_week_number()
+	tickets = get_tickets(p, weeks=-4)
+
+	weeks = list()
+
+	for x in xrange(4):
+		one_week = tickets[x*5:(x*5)+5]
+		weeks.append(TripWeek(curr_week-x, one_week))
+
+	context = {
+		'curr_date': datetime.datetime.now(),
+		'weeks': weeks,
+		'year_number': get_year_number(),
+		'traveler': p.name,
+		'user_id' : user_id,
+	}
+
+	return render(request, 'week_order.html', context)

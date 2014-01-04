@@ -1,20 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}Week {{ week_number }}{% endblock %}
-
-{% block content %}
-
-<div class="info">
-	<h3>{{ traveler }}</h3>
-	<div class="tools">
-		<div class="links">
-			<a href="/">Domov</a>
-			<a href="/week_order/{{ user_id }}/">Rezervacia</a>
-		</div>
-	</div>
-</div>
+{% extends "person.html" %}
 
 
+{% block order_table %}
 
 <div class="week_summary">
 <table>

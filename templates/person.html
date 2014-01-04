@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Week {{ week_number }}{% endblock %}
+
+{% block content %}
+
+<div class="info">
+	<div class="tools">
+		<div class="links">
+			<a href="/">Domov</a>
+			<a href="/week_order/{{ user_id }}/">Rezervacia</a>
+			<a href="/summary/{{ user_id }}/">Prehľad</a>
+			<a href="/older/{{ user_id }}/">Staršie</a>
+		</div>
+	</div>
+</div>
+
+
+{% block order_table %}
+
+<div class="week_order">
+<h3>{{ traveler }}</h3>
+</div>
+
+{% endblock %}
+{% endblock %}

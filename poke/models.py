@@ -22,7 +22,7 @@ class Pasanger(models.Model):
 
 class Ticket(models.Model):
 	pasanger = models.ForeignKey(Pasanger)
-	routes = models.ForeignKey(Route)
+	route = models.ForeignKey(Route)
 	is_return = models.BooleanField(default=False)
 
 	def __unicode__(self):
