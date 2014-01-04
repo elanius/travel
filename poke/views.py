@@ -2,7 +2,7 @@ from django.shortcuts import render
 from poke.models import Route, Pasanger, Ticket
 import datetime
 
-current_year = 2013
+current_year = 2014
 
 def get_week_days(week_number, year):
 	monday = datetime.datetime.strptime('%04d-%02d-1' % (year, week_number-1), '%Y-%W-%w')
