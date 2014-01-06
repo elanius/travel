@@ -26,4 +26,4 @@ class Ticket(models.Model):
 	is_return = models.BooleanField(default=False)
 
 	def __unicode__(self):
-		return "%s - %s" % (self.pasanger.name, self.routes.date.strftime("%d %b (%a)"))
+		return "%s - %s" % (self.pasanger.name, self.route.date.strftime("%d %b (%a)"))
