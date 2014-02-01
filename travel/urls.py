@@ -9,10 +9,11 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', views.home, name='home'),
+    url(r'^simple_view/$', views.simple_view, name='simple_view'),
     url(r'^home/(?P<user_id>[\w]*)/$', views.home, name='home'),
     url(r'^week_order/(?P<user_id>\w+)/$', views.week_order, name='week_order'),
     url(r'^summary/(?P<user_id>\w+)/$', views.person_summary, name='person_summary'),
-    url(r'^older/(?P<user_id>\w+)/$', views.older, name='older'),
+    url(r'^summary/(?P<user_id>\w+)/(?P<month>\d{1,2})/$', views.person_summary, name='person_summary'),
     # url(r'^travel/', include('travel.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

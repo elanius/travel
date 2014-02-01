@@ -36,7 +36,6 @@ hr {
 .links{
 	display: inline-block;
 	text-align: left;
-	width: 70%;
 }
 
 .links a{
@@ -50,7 +49,7 @@ hr {
     box-shadow: 3px 0 3px 1px #058298, -3px 0 3px 1px #058298;
     height: 100%;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
     width: 60%;
 }
 

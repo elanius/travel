@@ -1,0 +1,26 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Route Presov-Kosice</title>
+    <link rel="stylesheet" type="text/css" href="{% static "/static/style.css" %}" />
+</head>
+<body>
+	<div class="week_summary">
+		<table>
+			<tr>
+				<th>Deň</th>
+				<th>Pasažieri</th>
+			</tr>
+			{% for r in routes %}
+			<tr>
+				<td width="100px">{{ r.date|date:"j.n - l" }}</td>
+				<td>
+					<span id="week_summary_name">{{ r.pasangers|join:", " }}</span>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+</body>
+</html>

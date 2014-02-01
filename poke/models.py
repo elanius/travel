@@ -4,7 +4,6 @@ class Route(models.Model):
 	date = models.DateField('route date')
 	space = models.IntegerField(default=4)
 
-
 	def __unicode__(self):
 		return u'%s' % self.date.strftime("%d %b (%a)")
 
@@ -13,7 +12,6 @@ class Route(models.Model):
 class Pasanger(models.Model):
 	name = models.CharField(max_length=32)
 	link = models.CharField(max_length=32)
-
 
 	def __unicode__(self):
 		return self.name

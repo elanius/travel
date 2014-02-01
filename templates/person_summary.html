@@ -3,17 +3,39 @@
 
 {% block order_table %}
 
+<div class="info tools links">
+	{% for m in months %}
+	<a href="/summary/{{ user_id }}/{{ m.date|date:"n" }}">{{ m.date|date:"F" }}</a>
+	{% endfor %}
+</div>
+
 <div class="week_summary">
-<table>
-<tr>
-	<th>Deň</th>
-</tr>
-{% for r in routes %}
-<tr>
-	<td>{{ r.date|date:"j.n - l" }}</td>
-</tr>
-{% endfor %}
-</table>
+	<table>
+		<thead>
+			<tr>
+				<th colspan="2">{{ curr_month.date|date:"F" }}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for route, is_return in routes %}
+		<tr>
+			<td>{{ route.date|date:"j.n - l" }}</td>
+			<td>
+				1
+			{% if is_return %}
+				+ 1
+			{% endif %}
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td><strong>Spolu</strong></td>
+				<td><strong>{{ routes_sum }}</strong></td>
+			</tr>
+		</tfoot>
+	</table>
 </div>
 
 

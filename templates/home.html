@@ -19,8 +19,8 @@
 </tr>
 {% for r in routes %}
 <tr>
-	<td width="20%">{{ r.date|date:"j.n - l" }}</td>
-	<td width="15%">
+	<td width="100px">{{ r.date|date:"j.n - l" }}</td>
+	<td width="120px">
 		{% for i in r.space|get_range %}
 			{% if forloop.revcounter0 >= r.free_space%}
 				<img src="{% static "person.png" %}" alt="free space">
@@ -31,7 +31,7 @@
 			<img src="{% static "sleep.png" %}">
 		{% endfor %}
 	</td>
-	<td width="65%">
+	<td>
 		<span id="week_summary_name">{{ r.pasangers|join:", " }}</span>
 	</td>
 </tr>
